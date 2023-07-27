@@ -1,0 +1,6 @@
+[submodule "lamprogen-py"]
+	path = lamprogen-py
+	url = https://github.com/bnorthan/lamprogen-python/
+[submodule "tnia"]
+	path = tnia
+	url = https://github.com/True-North-Intelligent-Algorithms/tnia-python
