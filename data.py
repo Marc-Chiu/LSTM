@@ -11,7 +11,7 @@ model = StarDist2D(None, name=name,basedir=modeldir)
 
 class DataGenerator(keras.utils.Sequence):
     #'Generates data for Keras'
-    def __init__(self, image_IDs, mask_IDs, batch_size=5, dim=(70,1024,1024), n_channels=3, shuffle=True):
+    def __init__(self, image_IDs, mask_IDs, batch_size=32, dim=(70,1024,1024), n_channels=3, shuffle=True):
         #'Initialization'
         self.dim = dim
         self.batch_size = batch_size
@@ -32,7 +32,7 @@ class DataGenerator(keras.utils.Sequence):
 
         # Find list of IDs
         image_IDs_temp = [self.image_IDs[k] for k in indexes]
-        mask_IDs_temp = [self.image_IDs[k] for k in indexes]
+        mask_IDs_temp = [self.mask_IDs[k] for k in indexes]
 
         # Generate data
         X, y = self.__data_generation(image_IDs_temp, mask_IDs_temp)
@@ -61,13 +61,15 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         for i, image_ID, mask_ID in zip(idx, image_IDs_temp, mask_IDs_temp):
             # Store sample
-            image = tiff.imread('data/images/' + image_ID) / 255
-            #image = stardist_2d_slicewise(image, model) / 255
+            image = tiff.imread('data/inputs/' + image_ID)
+            image = image / np.max(image)
             image = np.expand_dims(image, axis=-1)
             X[i,] = image
 
             # Store mask
-            mask = tiff.imread('data/images/' + mask_ID) / 255
+            mask = tiff.imread('data/masks/' + mask_ID)
+            mask = mask / np.max(mask)
+
             mask = np.expand_dims(mask, axis=-1)
             y[i,] = mask
 
